@@ -51,10 +51,6 @@ nesterov.scggm.compute.gradient <- function(SigmaZ, SigmaZX, SigmaX, N, y) {
 }
 
 nesterov.scggm.lasso <- function(Z, X, l1, l2, init, tol = 1e-08, max.iter = 1000) {
-  # An implementation of Nesterov's second method to
-  # to solve argmin_{B, D, L} -logdet{S - L} + Trace{(S -L)Sigma}
-  # + lambda ||L||_\ast s.t. S = (I - B) D (I- B)' and so that
-  # the non-zero entries of B are given by Bstruct.
   
   N <- dim(X)[1]
   p <- dim(X)[2]
