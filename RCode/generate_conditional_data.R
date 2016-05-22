@@ -8,7 +8,7 @@ generate_conditional_data <- function(n_v, n_ph, n_p, n_c, sp_pph, sp_cph, sp_ph
   # n_p : Number of pathways
   # n_c : Number of confounders
   # sp_pph : Sparsity of graph Pathways -> Phenotypes
-  # sp_cph : Sparsity of grpah Confounders -> Phenotypes
+  # sp_cph : Sparsity of graph Confounders -> Phenotypes
   # sp_ph : Sparsity of graph of Phenotypes
   # sp_v : Sparsity of graph : Variants -> Pathways
   
@@ -25,7 +25,7 @@ generate_conditional_data <- function(n_v, n_ph, n_p, n_c, sp_pph, sp_cph, sp_ph
       #Pick pathways at random
       n_paths <- 1 #sample(x=c(1:n_cpaths), size=1)
       pathway <- sample(x=c(1:n_p),size=n_paths)
-      amat[i,pathway+n_v] <- runif(n=n_paths,min=0,max=1)
+      amat[i,pathway+n_v] <- runif(n=n_paths,min=-1,max=1)
     }
   }
   # Connect pathways to phenotypes
@@ -37,7 +37,7 @@ generate_conditional_data <- function(n_v, n_ph, n_p, n_c, sp_pph, sp_cph, sp_ph
       if(length(pathways)==0)
         next()
       for (j in pathways)
-        amat[i+n_v,j+n_p+n_v] <- runif(n=1,min=0,max=1)
+        amat[i+n_v,j+n_p+n_v] <- runif(n=1,min=-1,max=1)
     }
   }
   # Connect pehnotypes with each other. No cycles
@@ -45,7 +45,7 @@ generate_conditional_data <- function(n_v, n_ph, n_p, n_c, sp_pph, sp_cph, sp_ph
   for(i in 1:n_ph) {
     names[i+n_v+n_p] <- paste("Ph",i)
   }
-  gNelDAG <- randomDAG(n=n_ph,prob=sp_ph,lB=0,uB=1,V=names[(n_v+n_p+1):(n_v+n_p+n_ph)])
+  gNelDAG <- randomDAG(n=n_ph,prob=sp_ph,lB=-1,uB=1,V=names[(n_v+n_p+1):(n_v+n_p+n_ph)])
   dagamat <- get.adjacency(igraph.from.graphNEL(gNelDAG),attr="weight",sparse=FALSE)
   
   amat[(1+n_v+n_p):(n_ph+n_v+n_p),(1+n_v+n_p):(n_ph+n_v+n_p)] <- dagamat
@@ -58,7 +58,7 @@ generate_conditional_data <- function(n_v, n_ph, n_p, n_c, sp_pph, sp_cph, sp_ph
     if(length(pathways)==0)
       next()
     for (j in pathways)
-      amat[i+n_v+n_p+n_ph,j+n_v+n_p] <- runif(n=1,min=0,max=1)
+      amat[i+n_v+n_p+n_ph,j+n_v+n_p] <- runif(n=1,min=-1,max=1)
   }
   rownames(amat) <- colnames(amat) <- names
   #Now, build the corresponding DAG
@@ -66,11 +66,11 @@ generate_conditional_data <- function(n_v, n_ph, n_p, n_c, sp_pph, sp_cph, sp_ph
   reordering <- topological.sort(mydag,"out")
   cols <- (c(rep("green",n_v),rep("pink",n_p),rep("orange",n_ph),rep("darkgray",n_c)))[reordering]
   amat <- get.adjacency(mydag,attr="weight",sparse=FALSE)
-  amat <- amat[reordering,reordering]
-  mydag <- graph.adjacency(amat,mode="directed",weighted=TRUE)
+  amat <- amat[reordering,reordering] ** 2
+  #mydag <- graph.adjacency(amat,mode="directed",weighted=TRUE)
   
   #Generate data according to the DAG
-  data <- rmvDAG(n=N,as(mydag, "graphNEL"), back.compatible = TRUE)
+  data <- rmvDAG(n=N,as(amat, "graphNEL"), back.compatible = TRUE)
   
   #Identify Hidden/Obs nodes
   obs <- hid <- c()

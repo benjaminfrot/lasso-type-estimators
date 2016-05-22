@@ -121,9 +121,9 @@ nesterov.graphical.lasso <- function(X, l1, init, tol = 1e-08, max.iter = 1000) 
         if(i > minIter)
           break()
       }
-      if (pobj > objs[length(objs)-1]) {
-        tk <- 0.5 # Kill the momentum (see : http://statweb.stanford.edu/~candes/papers/adap_restart_paper.pdf)
-      }
+#      if (pobj > objs[length(objs)-1]) {
+#        tk <- 0.5 # Kill the momentum (see : http://statweb.stanford.edu/~candes/papers/adap_restart_paper.pdf)
+#      }
     }
   }
   x$obj <- min(objs)

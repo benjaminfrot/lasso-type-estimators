@@ -1,8 +1,8 @@
 source("./nesterov_sparse_conditional_gaussian_graphical_model.R")
 source("generate_conditional_data.R")
-set.seed(1)
+set.seed(2)
 N <- 10000
-nZ <- 100 # Number of inputs
+nZ <- 40 # Number of inputs
 nX <- 40 # Number of outputs
 nL <- 3 # Number of latent variables (confounders)
 nP <- nZ # Number of latent variables mediating the effect of the inputs
@@ -60,10 +60,11 @@ for (i in 1:nX) {
 init <- list()
 init$SZX <- matrix(0, nrow=nZ, ncol=nX)
 init$SX <- solve(cov(X))
-lambda1 <- 0.02
+lambda1 <- 0.1
 lambda2 <- lambda1
-fit <- nesterov.scggm.lasso(Z, X, lambda1, lambda2, init, max.iter = 10000)
+fit <- nesterov.scggm.lasso(Z, X, lambda1, lambda2, init, max.iter = 10000, tol=1e-10)
 plot(fit$objs)
+plot(fit$diffs)
 SX <- fit$SX != 0
 SX <- SX - diag(diag(SX))
 SZX <- fit$SZX != 0
@@ -72,3 +73,4 @@ print(sum(SX * true.SX) / sum(SX)) # Precision for SX
 print(sum(SZX * true.SZX) / sum(true.SZX)) # Rec for SZX
 print(sum(SZX * true.SZX) / sum(SZX)) # Prec for SZX
 image(SZX)
+image(SX)

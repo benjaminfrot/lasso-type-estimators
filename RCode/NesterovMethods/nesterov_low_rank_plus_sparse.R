@@ -72,8 +72,10 @@ nesterov.low.rank.plus.sparse <- function(X, l1, l2, init, tol = 1e-05, max.iter
   nTries <- 300
   # To store the value of the objective function at the prev. iter. :
   objs <- c()
+	diffs <- c()
   # Minimum number of iterations
-  minIter <- 5 
+  minIter <- 100
+	oX <- x
   
   for (i in 1:max.iter) {
     y$S <- (1 - tk) * x$S + tk * z$S
@@ -91,26 +93,26 @@ nesterov.low.rank.plus.sparse <- function(X, l1, l2, init, tol = 1e-05, max.iter
       
       # Compute the proximal operator of the l1-norm
       X1 <- 0.5 * (nz$S + t(nz$S))
-      X2 <- abs(X1) - 2 * l1 / (l * tk)
+      X2 <- abs(X1) - l1 / (l * tk)
       X2[X2 < 0] <- 0
       nz$S <- X2 * sign(X1)
       
       X1 <- 0.5 * (ny$S + t(ny$S))
-      X2 <- abs(X1) - 2 * l1 / (l)
+      X2 <- abs(X1) - l1 / (l)
       X2[X2 < 0] <- 0
       ny$S <- X2 * sign(X1)
       
       # Now compute the proximal operator of the nuclear norm
       X1 <- 0.5 * (nz$L + t(nz$L))
       eig <- eigen(X1)
-      eigVal <- eig$values - 2 * l2 / (l * tk)
+      eigVal <- eig$values - l2 / (l * tk)
       eigVal[eigVal < 0] <- 0
       nz$L <- eig$vectors %*% diag(eigVal) %*% t(eig$vectors)
       nz$L <- 0.5 * (nz$L + t(nz$L))
       
       X1 <- 0.5 * (ny$L + t(ny$L))
       eig <- eigen(X1)
-      eigVal <- eig$values - 2 * l2 / l
+      eigVal <- eig$values - l2 / l
       eigVal[eigVal < 0] <- 0
       ny$L <- eig$vectors %*% diag(eigVal) %*% t(eig$vectors)
       ny$L <- 0.5 * (ny$L + t(ny$L))
@@ -143,13 +145,23 @@ nesterov.low.rank.plus.sparse <- function(X, l1, l2, init, tol = 1e-05, max.iter
     pobj <- r$obj + l1 * sum(abs(x$S)) + l2 * sum(diag(x$L))
     tk <- (sqrt(tk**4 + 4 * tk ** 2) - tk**2) / 2
     objs <- c(objs, pobj)
-    
+
+ 		diff1 <- frobenius.norm(oX$S - x$S) / frobenius.norm(oX$S)	
+		if (frobenius.norm(oX$L) > 0) {
+		  diff2 <- frobenius.norm(oX$L - x$L) / frobenius.norm(oX$L)	
+		} else {
+		  diff2 <- frobenius.norm(oX$L - x$L)
+		}
+		diff <- diff1 + diff2
+		diffs <- c(diffs, diff)
+		oX <- x
+   
     if(length(objs) > 1) {
-      diff <- abs(objs[length(objs)] - objs[length(objs)-1])
-      if(diff < tol) {
-        if(i > minIter)
-          break()
-      }
+      if(i > minIter) {
+      	if(all(diffs[(length(diffs) - 100):length(diffs)] < tol)) {
+          	break()
+      	}
+			}
       if (pobj > objs[length(objs)-1]) {
         tk <- 0.5 # Kill the momentum (see : http://statweb.stanford.edu/~candes/papers/adap_restart_paper.pdf)
       }
@@ -158,6 +170,7 @@ nesterov.low.rank.plus.sparse <- function(X, l1, l2, init, tol = 1e-05, max.iter
   x$obj <- min(objs)
   x$objs <- objs
   x$diff <- diff
+	x$diffs <- diffs
   x$iter <- i
   
   x

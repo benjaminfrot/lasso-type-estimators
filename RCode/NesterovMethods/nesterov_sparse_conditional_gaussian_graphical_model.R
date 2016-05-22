@@ -74,6 +74,8 @@ nesterov.scggm.lasso <- function(Z, X, l1, l2, init, tol = 1e-08, max.iter = 100
   nTries <- 300
   # To store the value of the objective function at the prev. iter. :
   objs <- c()
+	diffs <- c()
+	oX <- x
   # Minimum number of iterations (to avoid being caught in the first "riples" of Nesterov's method)
   minIter <- 50
   
@@ -136,16 +138,24 @@ nesterov.scggm.lasso <- function(Z, X, l1, l2, init, tol = 1e-08, max.iter = 100
     }
     
     r <- nesterov.scggm.compute.gradient(SigmaZ, SigmaZX, SigmaX, N, x)
-    pobj <- r$obj + l1 * sum(abs(x$SX)) + l2 * sum(abs(x$SZX))
+    pobj <- r$obj + 2 * l1 * sum(abs(x$SX)) + 2 * l2 * sum(abs(x$SZX))
     tk <- (sqrt(tk**4 + 4 * tk ** 2) - tk**2) / 2
     objs <- c(objs, pobj)
-    
+		if (frobenius.norm(oX$SZX) > 0) {
+    	diff <- frobenius.norm(oX$SX - x$SX) / frobenius.norm(oX$SX) + frobenius.norm(oX$SZX - x$SZX) / frobenius.norm(oX$SZX)
+		} else {
+    	diff <- frobenius.norm(oX$SX - x$SX) / frobenius.norm(oX$SX) + frobenius.norm(oX$SZX - x$SZX)
+		}
+		diffs <- c(diffs, diff)
+		oX <- x
     if(length(objs) > 1) {
-      diff <- abs(objs[length(objs)] - objs[length(objs)-1])
-      if(diff < tol) {
-        if(i > minIter)
-          break()
-      }
+
+     if(i > minIter) {
+      	if(all(diffs[(length(diffs) - 10):length(diffs)] < tol)) {
+          	break()
+      	}
+			}
+
       if (pobj > objs[length(objs)-1]) {
         tk <- 0.5 # Kill the momentum (see : http://statweb.stanford.edu/~candes/papers/adap_restart_paper.pdf)
       }
@@ -154,6 +164,7 @@ nesterov.scggm.lasso <- function(Z, X, l1, l2, init, tol = 1e-08, max.iter = 100
   x$obj <- min(objs)
   x$objs <- objs
   x$diff <- diff
+  x$diffs <- diffs
   x$iter <- i
   
   x
