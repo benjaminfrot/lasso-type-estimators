@@ -1,0 +1,6 @@
+Fitting the Latent Sparse Conditional Gaussian Graphical Model using SDPT3 and YALMIP.
+Make sure both packages are in the current directory or in your path (you can modify 
+the function accordingly).
+
+To test the function:
+run test_fit_lscggm_with_SDPT3.m
