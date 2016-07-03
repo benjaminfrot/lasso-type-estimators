@@ -1,6 +1,6 @@
 % Load the dataset
 clear;
-load dataset0.0395620720748.mat;
+load example_dataset.mat;
 
 output_filename = 'output.mat';
 use_covariance = 0;
@@ -20,7 +20,7 @@ imagesc(abs(results{1}.SX) > 1e-06)
 
 %% Now, let's do the same, but this let's compute the covariance matrix ourselves
 clear;
-load dataset0.0395620720748.mat;
+load example_dataset.mat;
 
 output_filename = 'output.mat';
 use_covariance = 1;
