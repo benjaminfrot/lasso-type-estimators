@@ -1,4 +1,4 @@
-function [] = fit_one_with_SDPT3(input_filename)
+function [] = fit_lscggm_with_SDPT3(input_filename)
 %%
 % Takes a path to a .mat file as input
 % The .mat file must contain the following variables
