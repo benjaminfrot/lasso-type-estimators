@@ -1,3 +1,13 @@
-An R implementation of http://arxiv.org/abs/1110.3076
+This directory contains an R implementation of "Efficient Latent Variable Graphical Model Selection
+via Split Bregman Method" (http://arxiv.org/abs/1110.3076), where the Alternative Direction Method of Multipliers (ADMM) is used to compute the estimator suggested in "Latent variable graphical model selection via convex optimization" (https://projecteuclid.org/euclid.aos/1351602527)dd
 
-See test_split_bregman_lrps.R to see how to use the code. Note that you might need to change the "source" statements at the beginning depending on where you run the code from.
+See test_split_bregman_lrps.R for how to use the code. Note that you might need to change the "source" statements at the beginning depending on where you run the code from.
+
+# Requirements ##
+
+To run the example code, it is assumed that the following R packages are installed on your system: 
+  - R.Matlab
+  - ggplot2
+  - matrixcalc
+  
+  sdfsd
