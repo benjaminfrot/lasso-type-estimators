@@ -30,7 +30,7 @@ spy(SX);
 
 % Here, we compute a path.
 gamma = 0.2;
-lambda = [0.001, 0.005, 0.01, 0.05, 0.1];
+lambda = [0.01, 0.05, 0.1];
 % One pair (Lambda1, Lambda2) per line.
 % Lambda1 is the penalty on ||S||_1, Lambda2 is the penalty on ||L||_\ast.
 tuning_parameters = [lambda * gamma; lambda * (1 -gamma)]';
