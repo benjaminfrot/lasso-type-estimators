@@ -29,7 +29,7 @@ spy(SX);
 % fit_lscggm_with_split_bregman.m directly.
 
 % Here, we compute a path.
-gamma = 0.2;
+gamma = 0.3;
 lambda = [0.01, 0.05, 0.1];
 % One pair (Lambda1, Lambda2) per line.
 % Lambda1 is the penalty on ||S||_1, Lambda2 is the penalty on ||L||_\ast.
@@ -37,8 +37,9 @@ tuning_parameters = [lambda * gamma; lambda * (1 -gamma)]';
 
 % Where we want the results to be written
 output_filename = 'output.mat';
-% Maximum number of iterations. See function for more options
-maxiter = 500;
+% Maximum number of iterations. See function for more options. By default
+% tolerance is 10-5 . 
+maxiter = 1000;
 % Save the input data to input.mat
 save('input.mat', 'output_filename', 'tuning_parameters', 'X', 'Z', 'maxiter');
 % Fit the model
@@ -58,8 +59,8 @@ spy(squeeze(Ss(2,:,:))); % For the the second value
 spy(squeeze(Ss(3,:,:))); % Third value
 
 %% Look at the low-rank matrix
-LX = squeeze(Ls(3,1:32,:)); % LX for the third value of Lambda
-LZX = squeeze(Ls(3,33:end,:)); % LZX. The lower part of the matrix
+LX = squeeze(Ls(2,1:32,:)); % LX for the third value of Lambda
+LZX = squeeze(Ls(2,33:end,:)); % LZX. The lower part of the matrix
 %%
 imagesc(LX); % Visualise it
 %%

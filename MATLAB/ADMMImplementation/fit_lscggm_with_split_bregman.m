@@ -6,7 +6,7 @@ nesterov_tol = options.nesterov_tol;
 prox_tol = options.prox_tol;
 prox_maxiter = options.prox_maxiter;
 
-mu = 0.01;
+mu = 0.001;
 p = size(X, 2);
 q = size(Z, 2);
 S = params.S;

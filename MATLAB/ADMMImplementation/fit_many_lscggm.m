@@ -4,10 +4,10 @@ function [] = fit_many_lscggm( input_filename )
 
 % Default settings.
 maxiter = 500;
-tol = 1e-04;
+tol = 1e-05;
 nesterov_tol = 1e-10;
 prox_tol = 1e-10;
-prox_maxiter = 100;
+prox_maxiter = 50;
 
 % Load the data
 load(input_filename);

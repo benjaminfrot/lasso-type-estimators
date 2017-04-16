@@ -7,7 +7,7 @@ N 	= size(cx, 1);
 q = size(cx, 2);
 p = size(cy, 2);
 
-maxiter = 1000;
+maxiter = 50;
 eta     = 1.5;
 nobj	= 10;
 bconv	= 0;
