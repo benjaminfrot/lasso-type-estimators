@@ -1,5 +1,7 @@
-#Test
+The MATLAB folder contains two implementations of the estimator suggested in https://arxiv.org/abs/1512.06412 .
 
-## AAA
+The RCode folder contains an Alternative Direction Method of Multipliers implementation of the so-called "Low-Rank plus Sparse" estimator suggested in https://projecteuclid.org/euclid.aos/1351602527 . 
 
-sd
+More help is available in the corresponding directories. 
+
+For any questions: benjamin dot frot at stat dot math dot ethz dot ch .
