@@ -9,7 +9,9 @@ fn <- (args[[4]]) # Filename: Where to save the data, e.g. toydata.mat
 
 p <- 32 # Dimension of the problem
 
-nn <- n+10
+#nn <- 1000000 # If you want the MLE estimates to be reliable, then set nn to a very large value.
+# This is going to get *very* slow, however
+nn <- n + 10 # If you do not plan on using the MLE estimates for comparison. Leave it like this
 #### Common to all simulations. This is what we call S_X in the paper.
 K_X <- matrix(0, ncol=p, nrow=p)
 for(i in 1:p) {
