@@ -7,8 +7,7 @@ maxiter = 500;
 tol = 1e-05;
 nesterov_tol = 1e-10;
 prox_tol = 1e-10;
-prox_maxiter = 50;
-
+prox_maxiter = 100;
 % Load the data
 load(input_filename);
 % Setup the options
@@ -50,7 +49,8 @@ for i=1:n_t
     l1 = tuning_parameters(i,1);
     l2 = tuning_parameters(i,2);
     [l1 l2]
-    [init, diffs] = fit_lscggm_with_split_bregman(Z, X, l1, l2, options, init);
+%    [init, diffs] = fit_lscggm_with_RP_ADMM(Z, X, l1, l2, options, init);
+    [init, diffs] = fit_lscggm_with_ADMM(Z, X, l1, l2, options, init);
     Ss(i,:,:) = init.S;
     Ls(i,:,:) = init.L;
     Rs(i,:,:) = init.R;

@@ -9,8 +9,8 @@ fn <- (args[[4]]) # Filename: Where to save the data, e.g. toydata.mat
 
 p <- 32 # Dimension of the problem
 
-nn <- 100000
-#### Common to all simulations
+nn <- n+10
+#### Common to all simulations. This is what we call S_X in the paper.
 K_X <- matrix(0, ncol=p, nrow=p)
 for(i in 1:p) {
   for(j in 1:p) {
@@ -22,28 +22,31 @@ for(i in 1:p) {
   }
 }
 K_X <- K_X + t(K_X) + diag(runif(n=p, min=0.5, max=1.5))
-Z <- matrix(rt(n=nn*p, df=4), ncol=p)
+Z <- matrix(rt(n=nn*p, df=4), ncol=p) # Draw the entries of Z from Student-t with 4 degrees of freedom.
 ####
 
+##### Start by connecting inputs to outputs according to the structure described in the paper.
 #d_Z <- 5 # The rank of the matrix K_{ZX} is 2^(d_Z)
-#d_H <- 4 # The rank of the matrix K_{HX} is 2^(d_H)
-rk <- 2**d_Z
-nc <- p / rk
+rk <- 2**d_Z # Rank of K_{ZX}
+nc <- p / rk # Number of inputs that are connected to each latent factor 
 M_ZF <- matrix(0, ncol=rk, nrow = p)
 for(j in 1:rk) {
   start <- (j - 1) * nc + 1
   stop <- j * nc
   M_ZF[start:stop,j] <- 1
 }
-M_ZF <- M_ZF[sample(p, size=p, replace=F),]
-# Make the matrix of Fs as a function of the Zs
+M_ZF <- M_ZF[sample(p, size=p, replace=F),] # Permute the rows
 Fs <- matrix(NA, nrow=nn, ncol=rk)
 for(j in 1:rk) {
   idx <- which(M_ZF[,j]!=0)
   A <- as.matrix(Z[,idx])
   Fs[,j] <- rowSums(A)
 }
+# The latent factors are now linear combinations of the inputs.
+# Each latent factor is connected to exactly one input.
+# Each input is connected to exactly p/ (2**d_Z) latent factor.
 
+# Connect the latent factors to the ouputs
 K_FX <- M_ZF
 K_FX <- (K_FX[sample(p, size=p, replace=F),])
 for(idx in which(K_FX!=0)) {
@@ -51,6 +54,9 @@ for(idx in which(K_FX!=0)) {
 }
 K_FX <- t(K_FX)
 
+###########
+#### Now, take care of the "confounders". 
+#d_H <- 4 # The rank of the matrix K_{HX} is 2^(d_H)
 rk <- 2**d_H
 K_U <- diag(runif(n=rk, min=0.3, max=1))
 nc <- p / rk

@@ -6,7 +6,7 @@ Sxy	= cx'*cy;
 N 	= size(cx, 1);
 q = size(cx, 2);
 p = size(cy, 2);
-
+verbose = 0;
 maxiter = 50;
 eta     = 1.5;
 nobj	= 10;
@@ -20,7 +20,7 @@ thk_0 	= 2/3;
 ls_maxiter = 300;
 
 [obj1, init_flag]  = compute_gradient( theta, Sx, Sxy, Sy,N, 'n', SX, SZX, LX, LZX, Lambda, mu);
-if init_flag == 1 && verbose == true
+if init_flag == 1
     fprintf('sCGGM: error! initial Theta_yy not positive definite!\n');
 end
 obj(1) = obj1;
@@ -109,7 +109,7 @@ flag        = 0;
 [ cyy, p ]  = chol(theta.yy);
 
 if ( p > 0 )
-    if strcmp(gradient, 'y') == 1 && verbose
+    if strcmp(gradient, 'y') == 1
         fprintf( 'sCGGM: Theta_yy not positive definite!\n' );
     end
     flag        = 1;

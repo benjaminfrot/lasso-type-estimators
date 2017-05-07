@@ -1,4 +1,4 @@
-function [params, diffs] = fit_lscggm_with_split_bregman(Z, X, lambda1, lambda2, options, params)
+function [params, diffs] = fit_lscggm_with_ADMM(Z, X, lambda1, lambda2, options, params)
 
 maxiter = options.maxiter;
 tol = options.tol;
@@ -33,7 +33,7 @@ for i=1:maxiter
     V = abs(A) - lambda1 / mu;
     V(V <= 0) = 0;
     S = sign(A) .* V;
-    diff = norm(SX - S(1:p,:), 'fro') / norm(S,'fro');
+    diff = norm([SX;SZX] - S, 'fro') / norm(S,'fro');
     diffs = [diffs, diff];
     SX = S(1:p,:);
     SZX= S((p+1):end, :);
