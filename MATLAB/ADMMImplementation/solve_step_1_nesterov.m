@@ -1,5 +1,9 @@
 function [ Theta, obj ] = solve_step_1_nesterov(cx, cy, SX, SZX, LX, LZX, Lambda, mu, tol, theta)
 
+% This function is a modified version of the original version which can be found there:
+% http://www.cs.cmu.edu/~sssykim/softwares/softwares.html#scggm
+% It includes additional constraints required by the ADMM algorithm.
+
 Sx	= cx'*cx;
 Sy 	= cy'*cy;
 Sxy	= cx'*cy;
