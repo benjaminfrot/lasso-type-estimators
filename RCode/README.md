@@ -1,3 +1,6 @@
+# *Note* This code is deprecated. Use: https://github.com/benjaminfrot/lrps-admm instead .
+
+
 This directory contains an R implementation of "Efficient Latent Variable Graphical Model Selection
 via Split Bregman Method" (http://arxiv.org/abs/1110.3076), where the Alternative Direction Method of Multipliers (ADMM) is used to compute the estimator suggested in "Latent variable graphical model selection via convex optimization" (https://projecteuclid.org/euclid.aos/1351602527).
 
