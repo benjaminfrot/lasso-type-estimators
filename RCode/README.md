@@ -1,4 +1,4 @@
-# *Note* This code is deprecated. Use: https://github.com/benjaminfrot/lrps-admm instead .
+# *Note* This code is deprecated. See: https://github.com/benjaminfrot/lrpsadmm .
 
 
 This directory contains an R implementation of "Efficient Latent Variable Graphical Model Selection
